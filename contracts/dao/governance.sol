@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-contract Proposal {
-    enum ProposalStatus{OPEN, CLOSED, DONE}
+enum ProposalStatus{OPEN, CLOSED, DONE}
 
+struct Proposal {
     uint64 id; // Unique ID for the proposal.
     string description; // Description of the proposal.
     string hash; // Proposal file hash on IPFS.
