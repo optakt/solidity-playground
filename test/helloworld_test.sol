@@ -7,9 +7,8 @@ import "../contracts/helloworld.sol";
 
 contract TestHelloWorld {
     function testSaysHelloWorld() public {
-        HelloWorld hello;
+        HelloWorld helloWorld = new HelloWorld();
 
-        string memory got = hello.helloWorld();
-        Assert.equal(got, "Hello, World!", "HelloWorld should output 'Hello, World!'");
+        Assert.equal(helloWorld.helloWorld(), "Hello, World!", "Hello world should say hello");
     }
 }
