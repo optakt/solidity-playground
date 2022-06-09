@@ -14,6 +14,17 @@ contract Proposal {
 }
 
 contract DAO {
+
+    address[] public voters = [
+        0x1a1a1a1a1a1a1a1a1a1a1a1a1,
+        0x2a2a2a2a2a2a2a2a2a2a2a2a2,
+        0x3a3a3a3a3a3a3a3a3a3a3a3a3,
+        0x4a4a4a4a4a4a4a4a4a4a4a4a4,
+        0x5a5a5a5a5a5a5a5a5a5a5a5a5,
+        0x6a6a6a6a6a6a6a6a6a6a6a6a6,
+        0x7a7a7a7a7a7a7a7a7a7a7a7a7
+    ];
+
     uint64 counter;
 
     mapping(uint => Proposal) public open;
