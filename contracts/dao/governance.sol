@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-enum ProposalStatus{OPEN, CLOSED, DONE}
+    enum ProposalStatus{OPEN, CLOSED, DONE}
 
-struct Proposal {
-    uint64 id; // Unique ID for the proposal.
-    string description; // Description of the proposal.
-    string hash; // Proposal file hash on IPFS.
-    uint64 votingPeriod; // Time before the voting closes and proposal is either executed or closed.
-    ProposalStatus status; // Status of the proposal.
+    struct Proposal {
+        uint64 id; // Unique ID for the proposal.
+        string description; // Description of the proposal.
+        string hash; // Proposal file hash on IPFS.
+        uint64 votingPeriod; // Time before the voting closes and proposal is either executed or closed.
+        ProposalStatus status; // Status of the proposal.
 
-    mapping(address => bool) votes; // Votes that were cast for this proposal.
-}
+        mapping(address => bool) votes; // Votes that were cast for this proposal.
+    }
 
 contract DAO {
 
@@ -32,24 +32,26 @@ contract DAO {
     mapping(uint => Proposal) public done;
 
     // FIXME: We assume that file was written on IPFS and the proposal is created with its hash.
-    function propose(string hash, string description) public {
-        Proposal p;
-
-        p.id = counter++;
-        p.description = description;
-        p.hash = hash;
-        p.votingPeriod = 24*60*60; // FIXME: Should it be in time units or block counts?
-        p.status = OPEN;
-
-        open[p.id] = p;
+    function propose(string hash, string description) private {
+        open[p.id] = Proposal({
+            id : counter++,
+            description : description,
+            hash : hash,
+            votingPeriod : 24 * 60 * 60, // FIXME: Should it be in time units or block counts?
+            status : OPEN
+        });
     }
 
     // FIXME: Make the vote function not public but require certain privileges.
-    function vote(address voterAddr, uint64 pID, bool voteValue) public {
+    function vote(address voterAddr, uint64 pID, bool voteValue) private {
+        // FIXME: This already changes the state, so how to make it so that it's executeVote that does the writing?
         pending[pID].votes[voterAddr] = voteValue;
     }
 
     // FIXME: Make votes effective when public function is called.
+    function executeVote(address voterAddr, uint64 pID) public {
+        // FIXME: Implement.
+    }
 
     // FIXME: Hardcode addresses of wallets that can participate in DAO and enforce it.
 }
