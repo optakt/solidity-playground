@@ -9,6 +9,7 @@ contract TestHelloWorld {
     function testSaysHelloWorld() public {
         HelloWorld hello;
 
-        Assert.equal(hello.helloWorld(), "Hello, World!", "HelloWorld should output 'Hello, World!'");
+        string memory got = hello.helloWorld();
+        Assert.equal(got, "Hello, World!", "HelloWorld should output 'Hello, World!'");
     }
 }
