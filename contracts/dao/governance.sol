@@ -33,19 +33,21 @@ contract DAO {
 
     // FIXME: We assume that file was written on IPFS and the proposal is created with its hash.
     function propose(string hash, string description) private {
-        open[p.id] = Proposal({
-            id : counter++,
-            description : description,
-            hash : hash,
-            votingPeriod : 24 * 60 * 60, // FIXME: Should it be in time units or block counts?
-            status : OPEN
+        id = counter++;
+
+        open[id] = Proposal({
+            id:           id,
+            description:  description,
+            hash:         hash,
+            votingPeriod: 24 * 60 * 60, // FIXME: Should it be in time units or block counts?
+            status:       ProposalStatus.OPEN
         });
     }
 
     // FIXME: Make the vote function not public but require certain privileges.
     function vote(address voterAddr, uint64 pID, bool voteValue) private {
         // FIXME: This already changes the state, so how to make it so that it's executeVote that does the writing?
-        pending[pID].votes[voterAddr] = voteValue;
+        open[pID].votes[voterAddr] = voteValue;
     }
 
     // FIXME: Make votes effective when public function is called.
