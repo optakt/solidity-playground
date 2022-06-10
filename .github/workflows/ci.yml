@@ -59,7 +59,14 @@ jobs:
           for sol in "${solidityFiles[@]}"
           do
               echo "Analysing $sol..."
-              python smartBugs.py --tool all --file $DIR/contracts/$sol
+              python smartBugs.py --tool maian --file $DIR/contracts/$sol
+              python smartBugs.py --tool solhint --file $DIR/contracts/$sol
           done
-
-      # FIXME: Need to make CI fail if SmartBugs finds issues, and report them.
+         
+          cat results/maian/*/*/result.log # This should have logs.
+          if [ -z $(cat results/solhint/*/*/result.log) ] # This should be empty unless there are linter errors.
+          then
+            exit 1
+          else
+            exit 0
+          fi
