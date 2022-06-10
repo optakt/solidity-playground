@@ -37,7 +37,7 @@ contract DAO {
     mapping(uint => Proposal) public done;
 
     // FIXME: We assume that file was written on IPFS and the proposal is created with its hash.
-    function propose(string memory hash, string memory description) private {
+    function propose(string calldata hash, string calldata description) private {
         uint64 id = counter++;
 
         Proposal memory p = Proposal({
