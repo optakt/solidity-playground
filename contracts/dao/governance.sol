@@ -34,9 +34,9 @@ contract DAO {
         ProposalStatus status; // Status of the proposal.
     }
     struct ProposalVotes {
-        uint64 forVotes;
-        uint64 againstVotes;
-        uint64 abstentions;
+        uint64 for_;
+        uint64 against;
+        uint64 abstain;
 
         mapping(address => bool) voted; // Mapping to keep track of which members voted for this proposal.
     }
@@ -67,11 +67,11 @@ contract DAO {
         proposalVotes[pID].voted[voterAddr] = true;
 
         if (vote == VoteType.Abstain) {
-            proposalVotes[pID].abstentions++;
+            proposalVotes[pID].abstain++;
         } else if (vote == VoteType.For) {
-            proposalVotes[pID].forVotes++;
+            proposalVotes[pID].for_++;
         } else {
-            proposalVotes[pID].againstVotes++;
+            proposalVotes[pID].against++;
         }
     }
 
