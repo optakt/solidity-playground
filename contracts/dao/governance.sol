@@ -3,6 +3,10 @@ pragma solidity ^0.8.9;
 
 contract DAO {
 
+    event ProposalOpen(uint256 proposalId, uint256 startBlock, uint256 endBlock);
+    event ProposalClosed(uint256 proposalId);
+    event ProposalDone(uint256 proposalId);
+
     // FIXME: Use proper addresses.
     address[] public VOTERS = [
     0x1a1A1A1A1a1A1A1a1A1a1a1a1a1a1a1A1A1a1a1a,
@@ -13,7 +17,7 @@ contract DAO {
     0x6A6A6a6A6a6a6a6A6a6A6a6a6a6A6A6a6a6a6A6A,
     0x7A7a7A7a7a7a7a7A7a7a7a7A7a7A7A7A7A7A7a7A
     ]; // Hardcoded array of voter addresses.
-    uint64 public constant QUORUM = 4; // Minimum amount of votes (N/2+1).
+    uint256 public constant QUORUM = 4; // Minimum amount of votes (N/2+1).
 
     enum VoteType {
         Against,
@@ -25,18 +29,19 @@ contract DAO {
         Closed,
         Done
     }
-    uint64 counter; // Incremental counter for proposal IDs.
+    uint256 counter; // Incremental counter for proposal IDs.
     struct Proposal {
-        uint64 id; // Unique ID for the proposal.
+        uint256 id; // Unique ID for the proposal.
         string description; // Description of the proposal.
         string hash; // Proposal file hash on IPFS.
-        uint64 votingPeriod; // Time before the voting closes and proposal is either executed or closed.
+        uint256 startBlock; // Block from which the proposal opens.
+        uint256 endBlock; // Block at which the proposal closes.
         ProposalStatus status; // Status of the proposal.
     }
-    struct ProposalVotes {
-        uint64 for_;
-        uint64 against;
-        uint64 abstain;
+    struct ProposalVote {
+        uint256 for_;
+        uint256 against;
+        uint256 abstain;
 
         mapping(address => bool) voted; // Mapping to keep track of which members voted for this proposal.
     }
@@ -44,31 +49,45 @@ contract DAO {
     mapping(uint => Proposal) public closed;
     mapping(uint => Proposal) public done;
 
-    mapping (uint => ProposalVotes) private proposalVotes;
+    mapping (uint => ProposalVote) private proposalVotes;
+
+    function votingDelay() public returns (uint256) {
+        return 1; // 1 block
+    }
+
+    function votingPeriod() public returns (uint256) {
+        return 5000;
+    }
 
     // FIXME: We assume that file was written on IPFS and the proposal is created with its hash.
     function propose(string calldata hash, string calldata description) private {
-        uint64 id = counter++;
+        uint256 id = counter++;
+
+        uint256 startBlock = block.number + votingDelay();
+        uint256 endBlock = startBlock + votingPeriod();
 
         Proposal memory p = Proposal({
-            id : id,
-            description : description,
-            hash : hash,
-            votingPeriod : 24 * 60 * 60, // FIXME: Should it be in time units or block counts?
-            status : ProposalStatus.Open
+            id: id,
+            description: description,
+            hash: hash,
+            startBlock: startBlock,
+            endBlock: endBlock,
+            status: ProposalStatus.Open
         });
 
         open[id] = p;
+
+        emit ProposalOpen(id, startBlock, endBlock);
     }
 
     // FIXME: Make the vote function not public but require certain privileges.
-    function vote(address voterAddr, uint64 pID, VoteType vote) private {
+    function vote(address voterAddr, uint256 pID, VoteType voteType) private {
         // FIXME: This already changes the state, so how to make it so that it's executeVote that does the writing?
         proposalVotes[pID].voted[voterAddr] = true;
 
-        if (vote == VoteType.Abstain) {
+        if (voteType == VoteType.Abstain) {
             proposalVotes[pID].abstain++;
-        } else if (vote == VoteType.For) {
+        } else if (voteType == VoteType.For) {
             proposalVotes[pID].for_++;
         } else {
             proposalVotes[pID].against++;
@@ -76,7 +95,13 @@ contract DAO {
     }
 
     // FIXME: Make votes effective when public function is called.
-    function executeVote(address voterAddr, uint64 pID) public {
+    function executeVote(address voterAddr, uint256 pID) public {
         // FIXME: Implement.
+    }
+
+    function _quorumReached(uint256 pID) internal view returns (bool) {
+        ProposalVote storage pv = proposalVotes[pID];
+
+        return QUORUM <= pv.for_;
     }
 }
