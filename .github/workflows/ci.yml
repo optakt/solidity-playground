@@ -31,13 +31,13 @@ jobs:
       - name: Run Truffle test with CI=true for codechecks
         run: CI=true truffle test
 
-#      - name: Run test coverage
-#        run: truffle run coverage
-#
-#      - name: Generate .coveralls.yml file
-#        run: echo "${{ secrets.DOT_COVERALLS_YML }}" > .coveralls.yml
-#      - name: Send Coverage Info to CoverAlls
-#        run: cat coverage/lcov.info | npx coveralls
+      - name: Run test coverage
+        run: truffle run coverage
+
+      - name: Generate .coveralls.yml file
+        run: echo "${{ secrets.DOT_COVERALLS_YML }}" > .coveralls.yml
+      - name: Send Coverage Info to CoverAlls
+        run: cat coverage/lcov.info | npx coveralls
 
       - name: Setup Python 3.8
         uses: actions/setup-python@v2
@@ -64,6 +64,7 @@ jobs:
           done
          
           cat results/maian/*/*/result.log # This should have logs.
+          cat results/solhint/*/*/result.log # This should contains the warnings if any. 
           if [ -z $(cat results/solhint/*/*/result.log) ] # This should be empty unless there are linter errors.
           then
             exit 1
