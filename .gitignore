@@ -1,0 +1,7 @@
+
+node_modules/
+build/
+run.sh
+smartbugs/
+coverage/
+coverage.json

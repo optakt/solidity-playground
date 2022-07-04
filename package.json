@@ -1,0 +1,12 @@
+{
+  "name": "solidity-playground",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/optakt/solidity-playground.git",
+  "author": "Brendan Le Glaunec <brendan@optakt.io>,Diego Escobar <diego@optakt.io>",
+  "license": "MIT",
+  "dependencies": {
+    "solidity-coverage": "^0.7.21",
+    "ganache-cli": "^6.12.2"
+  }
+}
