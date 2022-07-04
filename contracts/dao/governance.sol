@@ -51,11 +51,11 @@ contract DAO {
 
     mapping (uint => ProposalVote) private proposalVotes;
 
-    function votingDelay() public returns (uint256) {
+    function votingDelay() public pure returns (uint256) {
         return 1; // 1 block
     }
 
-    function votingPeriod() public returns (uint256) {
+    function votingPeriod() public pure returns (uint256) {
         return 5000;
     }
 
@@ -95,9 +95,9 @@ contract DAO {
     }
 
     // FIXME: Make votes effective when public function is called.
-    function executeVote(address voterAddr, uint256 pID) public {
-        // FIXME: Implement.
-    }
+    // function executeVote(address voterAddr, uint256 pID) public {
+    //     // FIXME: Implement.
+    // }
 
     function _quorumReached(uint256 pID) internal view returns (bool) {
         ProposalVote storage pv = proposalVotes[pID];
